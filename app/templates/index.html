@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+#service {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#service th,#service td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+</style>
+
+
+
+<h1>{% block title %} Welcome to Infra {% endblock %}</h1>
+<hr>
+<body>
+
+<a href="{{ url_for('clusterlist') }}">
+    <h2>Clusters</h2>
+</a>
+<hr>
+
+<a href="{{ url_for('networklist') }}">
+    <h2>Networks</h2>
+</a>
+<hr>
+
+<a href="{{ url_for('racklist') }}">
+    <h2>Racks</h2>
+</a>
+<hr>
+
+<a href="{{ url_for('switchlist') }}">
+    <h2>Switchs</h2>
+</a>
+<hr>
+
+<a href="{{ url_for('hwlist') }}">
+    <h2>Hardwares</h2>
+</a>
+<hr>
+
+</body>
+</html>
+
+{% endblock %}
+

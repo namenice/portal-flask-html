@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<hr>
+<h1>Network List </b>  <button type="button"  class="btn btn-success float-right" data-toggle="modal" data-target="#networkadd">Add New Network</button></h1>
+<hr>
+<!-- table list networks-->
+  <table id="data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Vlan</th>
+        <th>Subnet</th>
+        <th>Domain</th>
+	<th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for network in networks %}
+        <tr>
+          <td>{{ network.name }}</td>
+          <td>{{ network.vlan }}</td>
+          <td>{{ network.subnet }}</td>
+          <td>{{ network.domain }}</td>
+	  <td>
+            <a href="{{ url_for('reportsubnet', id=network.id) }}" class="btn btn-info btn-xs">Report</a>
+	    <a href="{{ url_for('ipaddresslist', id=network.id) }}" class="btn btn-info btn-xs">IPaddr</a>
+	    <a href="{{ url_for('scanip',id=network.id) }}" class="btn btn-danger btn-xs" onclick="return confirm ('Are you sure you want to Scan IP ?')">ScanIP</a>
+            <a href="{{ url_for('networkedit', id=network.id) }}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#networkedit{{network.id}}">Edit</a>
+            <a href="{{ url_for('networkdelete',id=network.id) }}" class="btn btn-danger btn-xs" onclick="return confirm ('Are you sure you want to Delete ?')">Delete</a>
+	  </td>
+        </tr>
+	<div id="Progress_Status">
+            <div id="myprogressBar"></div>
+        </div>
+        <!-- Open Modal Box (Edit network)-->
+        <div id = "networkedit{{network.id}}" class = "modal fade" role="dialog">
+            <div class = "modal-dialog">
+                <div class="modal-content">
+                    <div class = "modal-header">
+                        <h4 class = "modal-title">Edit Network</h4>
+                    </div>
+
+                    <div class = "modal-body">
+                    <form action = "{{ url_for('networkedit', id=network.id) }}" method="POST">
+
+			<div class = "form-group">
+                            <label> Name:</label>
+                            <input type="text" placeholder="Name Network EX. mgmt-draco" value="{{network.name}}" class="form-control" name="name" required = "True">
+                        </div>
+                        <div class = "form-group">
+                            <input type="hidden" placeholder="Vlan Number EX. 123" value="{{ network.vlan }}" class="form-control" name="vlan" required = "True">
+                        </div>
+                        <div class = "form-group">
+                            <input type="hidden" placeholder="Subnet IP EX. 192.168.10.0/24" value="{{ network.subnet }}" class="form-control" name="subnet" required = "True" >
+                        </div>
+                        <div class = "form-group">
+			    <input type="hidden" placeholder="Domain Network EX. 3" value="{{ network.domain }}" class="form-control" name="domain" required = "True" >
+                        </div>
+
+                        <div class = "form-group">
+                            <button class="btn btn-primary" type = "submit">UPDATE</button>
+                            <button type="button" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
+                        </div>
+
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      {% endfor %}
+    </tbody>
+  </table>
+  
+
+<!-- Open Modal Box (Add Network)-->
+<div id = "networkadd" class = "modal fade" role="dialog">
+    <div class = "modal-dialog">
+        <div class="modal-content">
+            <div class = "modal-header">
+                <h4 class = "modal-title">Add Network</h4>
+            </div>
+
+            <div class = "modal-body">
+            <form action = "{{url_for('networkadd')}}" method="POST">
+
+                <div class = "form-group">
+                    <label> Name:</label>
+                    <input type="text" placeholder="Name Network EX. mgmt-draco" class="form-control" name="name" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Vlan:</label>
+		    <input type="number" placeholder="Vlan Number EX. 123" class="form-control" name="vlan" min="1" max="4096" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Subnet:</label>
+                    <input type="text" placeholder="Subnet IP EX. 192.168.10.0/24" class="form-control" name="subnet" required pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).[1-3][1-9]" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Domain:</label>
+                    <input type="number" placeholder="Domain Network EX. 3" class="form-control" name="domain" required = "True">
+                </div>
+
+                <div class = "form-group">
+                    <button class="btn btn-primary" type = "submit">Add</button>
+                    <button type="button" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
+                </div>
+
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('#data').DataTable({
+        columns: [
+          null,
+          {orderable: false},
+	  {orderable: false},
+	  {orderable: false},
+          null],
+      });
+    });
+  </script>
+
+{% endblock %}

@@ -1,0 +1,386 @@
+{% extends "base.html" %}
+
+{% block content %}
+<hr>
+<h1>Hardwares List 
+     <td>
+	 <a href="{{ url_for('exporthw') }}" class="btn btn-info btn-xs">Export</a>
+     </td>
+     <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#hwadd">Add New Hardware</button>
+</h1>
+<hr>
+
+<!-- table list hardware-->
+  <table id="data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Project</th>
+	<th>Status</th>
+        <th>Name</th>
+        <th>NameOLS</th>
+	<th>Model</th>
+	<th>HW-SN</th>
+	<th>HW-IP</th>
+        <th>Site</th>
+	<th>Domain</th>
+	<th>Note</th>
+	<th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hardware in hardwares %}
+        <tr>
+          <td>{{ hardware.project }}</td>
+          <td>{{ hardware.status }}</td>
+          <td>{{ hardware.name }}</td>
+          <td>{{ hardware.nameols }}</td>
+	  <td>{{ hardware.model }}</td>
+	  <td>{{ hardware.hwserialnumber }}</td>
+	  <td>{{ hardware.hwip }}</td>
+	  <td>{{ hardware.site }}</td>
+	  <td>{{ hardware.domain }}</td>
+	  <td>{{ hardware.note }}</td>
+          <td>
+            <a class="btn btn-info btn-xs" data-toggle="modal" data-target="#hwdetail{{hardware.id}}">Detail</a>
+            <a href="{{ url_for('hwedit', id=hardware.id) }}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#hwedit{{hardware.id}}">Edit</a>
+            <a href="{{ url_for('hwdelete', id=hardware.id) }}" class="btn btn-danger btn-xs" onclick="return confirm ('Are you sure you want to Delete ?')">Delete</a>
+          </td>
+        </tr>
+        <!-- Open Modal Box (Detail Hardware)-->
+        <div id = "hwdetail{{hardware.id}}" class = "modal fade" role="dialog">
+            <div class = "modal-dialog">
+                <div class="modal-content">
+                    <div class = "modal-header">
+                        <h4 class = "modal-title">Detail Hardware</h4>
+                    </div>
+		    <div class = "modal-body">
+		        <p> <b>Project</b>: {{ hardware.project }}
+			<p> <b>Status</b>: {{ hardware.status }}
+			<p> <b>Name</b>: {{ hardware.name }}
+			<p> <b>NameOLS</b>: {{ hardware.nameols }}
+			<p> <b>Model</b>: {{ hardware.model }}
+			<p> <b>HW-SN</b>: {{ hardware.hwserialnumber }}
+			<p> <b>BOX-SN</b>: {{ hardware.boxserialnumber }}
+			<p> <b>HW-IP</b>: {{ hardware.hwip }}
+			<p> <b>BOX-IP</b>: {{ hardware.boxip }}
+			<p> <b>Type</b>: {{ hardware.type }}
+			<p> <b>Site</b>: {{ hardware.site }}
+			<p> <b>Domain</b>: {{ hardware.domain }}
+			<p> <b>Rack</b>: {{ hardware.rack }}
+			<p> <b>Unit</b>: {{ hardware.unit }}
+			<p> <b>Switch01</b>: {{ hardware.switch01 }}
+			<p> <b>Port01</b>: {{ hardware.port01 }}
+                        <p> <b>Switch02</b>: {{ hardware.switch02 }}
+                        <p> <b>Port02</b>: {{ hardware.port02 }}
+			<p> <b>Vender</b>: {{ hardware.vender }}
+			<p> <b>Owner</b>: {{ hardware.owner }}
+			<p> <b>Note</b>: {{ hardware.note }}
+                        <div class = "form-group">
+                            <button type="submit" class="btn btn-success float-right" data-dismiss="modal">DONE</button>
+                        </div>
+
+		    </div>
+		</div>
+	    </div>
+        </div>
+
+        <!-- Open Modal Box (Edit Hardware)-->
+        <div id = "hwedit{{hardware.id}}" class = "modal fade" role="dialog">
+            <div class = "modal-dialog">
+                <div class="modal-content">
+                    <div class = "modal-header">
+                        <h4 class = "modal-title">Edit Hardware</h4>
+                    </div>
+
+                    <div class = "modal-body">
+                    <form action = "{{ url_for('hwedit', id=hardware.id) }}" method="POST">
+
+                        <div class="form-row">
+                        <div class = "form-group col-md-6">
+                            <label> Name:</label>
+                            <input type="text" placeholder="Name HW EX. node01" value="{{hardware.name}}" class="form-control" name="name" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> Project:</label>
+                            <input type="text" placeholder="Project name EX. gate" value="{{hardware.project}}" class="form-control" name="project" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> NameOLS:</label>
+                            <input type="text" placeholder="Logical name EX. prd-node01" value="{{hardware.nameols}}" class="form-control" name="nameols" required = "True">
+                        </div>
+                        <div class = "form-group">
+                            <label for="hwstatusedit"> Status:</label>
+                            <select class="form-control" id="hwstatusedit" name="status">
+                                <option value="{{hardware.status}}">{{hardware.status}}</option>
+                                <option value="active">Active</option>
+                                <option value="available">Available</option>
+                            </select>
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> HWIP:</label>
+                            <input type="text" placeholder="IPMI EX. 10.20.199.1" value="{{hardware.hwip}}" class="form-control" name="hwip" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> BOXIP:</label>
+                            <input type="text" placeholder="BOX IPMI EX. 10.20.199.1"  value="{{hardware.boxip}}" class="form-control" name="boxip" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label for="hwstypeedit"> Type:</label>
+                            <select class="form-control" id="hwstypeedit" name="type">
+                                <option value="{{hardware.type}}">{{hardware.type}}</option>
+                                <option value="controller">Controller</option>
+                                <option value="compute">Compute</option>
+                                <option value="storage-ssd">Staorge-ALLFLASH</option>
+				<option value="storage-hdd">Storage-SAS</option>
+				<option value="storage-hdd">Storage-SATA</option>
+                            </select>
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> Model:</label>
+                            <input type="text" placeholder="Model EX. Lenovo-SR650" value="{{hardware.model}}" class="form-control" name="model" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> Site:</label>
+			    <input type="text" placeholder="Site EX. SRB" value="{{hardware.site}}" class="form-control" name="site" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> Domain:</label>
+			    <input type="number" placeholder="Domain EX. 3" value="{{hardware.domain}}" class="form-control" name="domain" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label for="rackedit"> Rack:</label>
+                            <select  class="form-control" id="rackedit" name="rack">
+                                <option value="{{hardware.rack}}">{{hardware.rack}}</option>
+                                {% for rack in racks %}
+                                <option value="{{rack.name}}">{{rack.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> Unit:</label>
+                            <input type="text" placeholder="Unit EX. u2-3" value="{{hardware.unit}}" class="form-control" name="unit" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> HW-SN:</label>
+                            <input type="text" placeholder="HW S/N EX. 123" value="{{hardware.hwserialnumber}}" class="form-control" name="hwserialnumber" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> BOX-SN:</label>
+			    <input type="text" placeholder="Box S/N EX. 123" value="{{hardware.boxserialnumber}}" class="form-control" name="boxserialnumber" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label for="swedit01"> Switch01:</label>
+                            <select  class="form-control" id="swedit01" name="switch01">
+				<option value="{{hardware.switch01}}">{{hardware.switch01}}</option>
+                                {% for switch in switchs %}
+                                <option value="{{switch.name}}">{{switch.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> Port01:</label>
+                            <input type="text" placeholder="Port EX. 1,2" value="{{hardware.port01}}" class="form-control" name="port01" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label for="swedit02"> Switch02:</label>
+                            <select  class="form-control" id="swedit02" name="switch02">
+                                <option value="{{hardware.switch02}}">{{hardware.switch02}}</option>
+                                {% for switch in switchs %}
+                                <option value="{{switch.name}}">{{switch.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> Port02:</label>
+                            <input type="text" placeholder="Port EX. 1,2" value="{{hardware.port02}}" class="form-control" name="port02" required = "True">
+                        </div>
+
+                        <div class = "form-group col-md-6">
+                            <label> Vender:</label>
+                            <input type="text" placeholder="Vender EX. INET" value="{{hardware.vender}}" class="form-control" name="vender" required = "True">
+                        </div>
+                        <div class = "form-group col-md-6">
+                            <label> Owner:</label>
+                            <input type="text" placeholder="Owner EX. INET" value="{{hardware.owner}}" class="form-control" name="owner" required = "True">
+                        </div>
+
+			</div>
+
+                        <div class = "form-group">
+                            <label> Note:</label>
+                            <input type="text" placeholder="note" value="{{hardware.note}}" class="form-control" name="note" required = "True">
+                        </div>
+
+                        <div class = "form-group">
+                            <button class="btn btn-primary" type = "submit">DONE</button>
+                            <button type="button" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
+                        </div>
+
+
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+      {% endfor %}
+    </tbody>
+  </table>
+  
+<!-- Open Modal Box (Add Hardware)-->
+<div id = "hwadd" class = "modal fade" role="dialog">
+    <div class = "modal-dialog">
+        <div class="modal-content">
+            <div class = "modal-header">
+                <h4 class = "modal-title">Add Hardware</h4>
+            </div>
+
+            <div class = "modal-body">
+            <form action = "{{url_for('hwadd')}}" method="POST">
+
+                <div class = "form-group">
+                    <label> Name:</label>
+                    <input type="text" placeholder="Name HW EX. node01" class="form-control" name="name" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Project:</label>
+                    <input type="text" placeholder="Project name EX. gate" class="form-control" name="project" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> NameOLS:</label>
+                    <input type="text" placeholder="Logical name EX. prd-node01" class="form-control" name="nameols" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label for="hwstatusadd"> Status:</label>
+                    <select class="form-control" id="hwstatusadd" name="status">
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                        <option value="active">Active</option>
+                        <option value="available">Available</option>
+                    </select>
+                </div>
+                <div class = "form-group">
+                    <label> HWIP:</label>
+                    <input type="text" placeholder="IPMI EX. 10.20.199.1" class="form-control" name="hwip" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> BOXIP:</label>
+                    <input type="text" placeholder="BOX IPMI EX. 10.20.199.1" class="form-control" name="boxip" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label for="hwstypeadd"> Type:</label>
+                    <select class="form-control" id="hwstypeadd" name="type">
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                        <option value="controller">Controller</option>
+                        <option value="compute">Compute</option>
+                        <option value="storage-ssd">Staorge-ALLFLASH</option>
+                        <option value="storage-hdd">Storage-SAS</option>
+                        <option value="storage-hdd">Storage-SATA</option>
+                    </select>
+                </div>
+                <div class = "form-group">
+                    <label> Model:</label>
+                    <input type="text" placeholder="Model EX. Lenovo-SR650" class="form-control" name="model" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Site:</label>
+                    <input type="text" placeholder="Site EX. SRB" class="form-control" name="site" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Domain:</label>
+                    <input type="number" placeholder="Domain EX. 3" class="form-control" name="domain" required = "True">
+                </div>
+                <div class = "form-group">
+		    <label for="rackadd"> Rack:</label>
+                    <select  class="form-control" id="rackadd" name="rack">
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                        {% for rack in racks %}
+                        <option value="{{rack.name}}">{{rack.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class = "form-group">
+                    <label> Unit:</label>
+                    <input type="text" placeholder="Unit EX. u2-3" class="form-control" name="unit" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> HW-SN:</label>
+                    <input type="text" placeholder="HW S/N EX. 123" class="form-control" name="hwserialnumber" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> BOX-SN:</label>
+                    <input type="text" placeholder="Box S/N EX. 123" class="form-control" name="boxserialnumber" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label for="swadd01"> Switch01:</label>
+                    <select  class="form-control" id="swadd01" name="switch01">
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                        {% for switch in switchs %}
+                        <option value="{{switch.name}}">{{switch.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class = "form-group">
+                    <label> Port01:</label>
+                    <input type="text" placeholder="Port EX. 1,2" class="form-control" name="port01" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label for="swadd02"> Switch02:</label>
+                    <select  class="form-control" id="swadd02" name="switch02">
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                        {% for switch in switchs %}
+                        <option value="{{switch.name}}">{{switch.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class = "form-group">
+                    <label> Port02:</label>
+                    <input type="text" placeholder="Port EX. 1,2" class="form-control" name="port02" required = "True">
+                </div>
+
+                <div class = "form-group">
+                    <label> Vender:</label>
+                    <input type="text" placeholder="Vender EX. INET" class="form-control" name="vender" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Owner:</label>
+                    <input type="text" placeholder="Owner EX. INET" class="form-control" name="owner" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Note:</label>
+                    <input type="text" placeholder="note" class="form-control" name="note" required = "True">
+                </div>
+
+                <div class = "form-group">
+                    <button class="btn btn-primary" type = "submit">Add</button>
+                    <button type="button" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
+                </div>
+
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('#data').DataTable({
+        columns: [
+          null,
+          {orderable: false},
+	  {orderable: false},
+	  {orderable: false},
+          {orderable: false},
+          {orderable: false},
+          {orderable: false},
+          {orderable: false},
+          {orderable: false},
+          {orderable: false},
+          null],
+      });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<hr>
+<h1>Rack List
+     <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#clusteradd">Add New Rack</button>
+</h1>
+<hr>
+
+<!-- table list cluster-->
+  <table id="data" class="table table-striped" data-detail-view="true">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Site</th>
+        <th>Room</th>
+        <th>Floor</th>
+	<th>Domain</th>
+	<th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rack in racks %}
+        <tr>
+	  <td>{{ rack.name }}</td>
+          <td>{{ rack.site }}</td>
+          <td>{{ rack.room }}</td>
+          <td>{{ rack.floor }}</td>
+	  <td>{{ rack.domain }}</td>
+	  <td>
+            <a href="{{ url_for('rackdelete',id=rack.id) }}" class="btn btn-danger btn-xs" onclick="return confirm ('Are you sure you want to Delete ?')">Delete</a>
+	  </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+<!-- Open Modal Box (Add Cluster)-->
+<div id = "clusteradd" class = "modal fade" role="dialog">
+    <div class = "modal-dialog">
+        <div class="modal-content">
+            <div class = "modal-header">
+                <h4 class = "modal-title">Add Rack</h4>
+            </div>
+
+            <div class = "modal-body">
+            <form action = "{{url_for('rackadd')}}" method="POST">
+
+                <div class = "form-group">
+                    <label> Name:</label>
+                    <input type="text" placeholder="Name Rack EX. rackname" class="form-control" name="name" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Site:</label>
+                    <input type="text" placeholder="Site Rack EX. srb" class="form-control" name="site" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Room:</label>
+                    <input type="text" placeholder="Rack Room EX. room-rack" class="form-control" name="room" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Floor:</label>
+                    <input type="number" placeholder="Rack Floor  EX. 10" class="form-control" name="floor" required = "True">
+                </div>
+                <div class = "form-group">
+                    <label> Domain:</label>
+                    <input type="number" placeholder="Rack Domain EX. 3" class="form-control" name="domain" required = "True">
+                </div>
+                <div class = "form-group">
+                    <button class="btn btn-primary" type = "submit">Add</button>
+                    <button type="button" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
+                </div>
+
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('#data').DataTable({
+        columns: [
+          null,
+          {orderable: false},
+	  {orderable: false},
+	  {orderable: false},
+	  {orderable: false},
+          null],
+      });
+    });
+  </script>
+{% endblock %}

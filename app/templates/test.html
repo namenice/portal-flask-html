@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        #Progress_Status {
+          width: 50%;
+          background-color: #ddd;
+        }
+        #myprogressBar {
+          width: 2%;
+          height: 20px;
+          background-color: #4CAF50;
+        }
+        </style>
+    <head>
+        <title>Upload</title>
+    </head>
+    <body>
+	    <a href="{{ url_for('syncuserad')}}" class="btn btn-danger btn-xs" onclick="update()">ScanIP</a>
+
+        <div id="Progress_Status" style="display:none;">
+            <div id="myprogressBar"></div>
+          </div>
+
+        <script>
+        function update() {
+            var element = document.getElementById("myprogressBar");   
+            var width = 1;
+            var identity = setInterval(scene, 1);
+            function scene() {
+            if (width >= 100) {
+                clearInterval(identity);
+            } else {
+                width++; 
+                element.style.width = width + '%'; 
+                }
+            }
+        }
+        </script>
+    </body>
+</html>
